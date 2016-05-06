@@ -7,27 +7,39 @@ import ForwarderStore from '../stores/store'
 import ForwarderList from '../components/ForwarderList'
 
 class Home extends Component {
-  state = {
-    counter: 0
-  }
+  state = {}
 
   componentDidMount() {
 
     ForwarderStore.listen( () => {
-        this.setState({ forwarderTypes: ForwarderStore.types })
+        this.setState({ forwarders: {
+            types: ForwarderStore.types,
+            typesError: ForwarderStore.typesError
+          }
+        })
     })
 
     ForwarderActions.fetchTypes()
   }
 
   render = () => {
-    const {forwarderTypes} = this.state
-    if(!forwarderTypes) {
-        return <h1>No Types yet!</h1>
+    const {forwarders} = this.state
+    if(!forwarders) {
+        return <h1>No Forwarder information yet!</h1>
     }
 
-    const items = _.map(forwarderTypes, (forwarderType, index) => {
-      return <li>{forwarderType.name}</li>
+    const {typesError, types} = forwarders
+
+    if(typesError) {
+      return <h1>Error Loading Forwarder Types!: {typesError.message} </h1>
+    }
+
+    if(types.length == 0) {
+      return <h1>No types!</h1>
+    }
+
+    const items = _.map(types, (type, index) => {
+      return <li>{type.name} - {type.forwarderTypeId} </li>
     })
 
     return (
