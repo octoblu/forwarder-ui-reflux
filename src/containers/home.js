@@ -12,7 +12,8 @@ class Home extends Component {
   componentDidMount() {
 
     ForwarderStore.listen( () => {
-        this.setState({ forwarders: {
+        this.setState({
+          forwarders: {
             types: ForwarderStore.types,
             typesError: ForwarderStore.typesError
           }
